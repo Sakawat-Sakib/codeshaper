@@ -7,11 +7,11 @@ export class RedisService implements OnModuleInit, OnModuleDestroy{
 
   constructor() {
     this.redisClient = createClient({
-      username: 'default',
-      password: '4nBBZzzwyOBruUwlL2nv28tUS1tM2zOW',
+      username: process.env.REDIS_USERNAME,
+      password: process.env.REDIS_PASSWORD,
       socket: {
-        host: 'redis-19018.c301.ap-south-1-1.ec2.redns.redis-cloud.com',
-        port: 19018
+        host: process.env.REDIS_HOST,
+        port: Number(process.env.REDIS_PORT)
       }
     });
 

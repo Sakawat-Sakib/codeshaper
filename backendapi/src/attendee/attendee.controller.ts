@@ -7,23 +7,23 @@ export class AttendeeController {
     constructor(private readonly attendeeService: AttendeeService){}
 
     @Post() //add attendee
-    create(@Body(ValidationPipe) createAttendeeDto: CreateAttendeeDto){
-        return this.attendeeService.create(createAttendeeDto)
+    async create(@Body(ValidationPipe) createAttendeeDto: CreateAttendeeDto){
+        return await this.attendeeService.create(createAttendeeDto)
     }
 
     @Get() //get all attendee
-    findAll(){
-        return this.attendeeService.findAll()
+    async findAll(){
+        return await this.attendeeService.findAll()
     }
 
     @Get(':id') //GET /users/:id
-    findOne(@Param('id') id: string){
-        return this.attendeeService.findOne(id) 
+    async findOne(@Param('id') id: string){
+        return await this.attendeeService.findOne(id) 
     }
 
     @Delete(':id')
-    deleteOne(@Param('id') id: string){
-        return this.attendeeService.deleteOne(id)
+    async deleteOne(@Param('id') id: string){
+        return await this.attendeeService.deleteOne(id)
     }
 
 }

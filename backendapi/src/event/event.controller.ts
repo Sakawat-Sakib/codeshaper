@@ -8,26 +8,26 @@ export class EventController {
 
     //create event 
     @Post()
-    createEvent(@Body(ValidationPipe) createEventDto:CreateEventDto){
-        return this.eventService.createEvent(createEventDto)
+    async createEvent(@Body(ValidationPipe) createEventDto:CreateEventDto){
+        return await this.eventService.createEvent(createEventDto)
     }
 
     //list of all events
     @Get()
-    allEventsList(){
-        return this.eventService.allEventsList()
+    async allEventsList(){
+        return await this.eventService.allEventsList()
     }
 
     //details of single events
     @Get(":id")
-    singleEvent(@Param("id") id:string){
-        return this.eventService.singleEvent(id)
+    async singleEvent(@Param("id") id:string){
+        return await this.eventService.singleEvent(id)
     }
 
     //delete event
     @Delete(":id")
-    deleteEvent(@Param("id") id:string){
-        return this.eventService.deleteEvent(id)
+    async deleteEvent(@Param("id") id:string){
+        return await this.eventService.deleteEvent(id)
     }
 
 }
