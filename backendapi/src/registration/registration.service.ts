@@ -2,6 +2,8 @@ import { BadRequestException, NotFoundException, Injectable } from '@nestjs/comm
 import { DatabaseService } from 'src/database/database.service';
 import { RedisService } from 'src/redis/redis.service';
 import { CreateRegistrationDto } from './dto/registration.dto';
+import { InjectQueue } from '@nestjs/bull';
+import { Queue } from 'bull';
 
 @Injectable()
 export class RegistrationService {
@@ -10,7 +12,8 @@ export class RegistrationService {
 
     constructor(
         private databaseService: DatabaseService,
-        private redisService: RedisService
+        private redisService: RedisService,
+        @InjectQueue('email-queue') private emailQueue: Queue
     ) {}
 
     async createRegistration(createRegistrationDto: CreateRegistrationDto) {
@@ -66,6 +69,26 @@ export class RegistrationService {
         await this.redisService.del(
             `${this.REGISTRATION_CACHE_PREFIX}${createRegistrationDto.eventId}`
         );
+
+        //Add email job to queue
+        await this.emailQueue.add('registration-confirmation', {
+            attendee: {
+                name: registration.attendee.name,
+                email: registration.attendee.email
+            },
+            event: {
+                name: registration.event.name,
+                date: registration.event.date,
+                location: registration.event.location,
+                description: registration.event.description
+            }
+        }, {
+            attempts: 2,
+            backoff: {
+                type: 'exponential',
+                delay: 1000
+            }
+        });
 
         return registration;
     }
