@@ -1,9 +1,11 @@
 ## Project setup :
 
-  #step 1: install packages
-    npm install
+  #step 1: install packages :
+    - npm install
 
-  #step 2: set environment variables in .env file
+
+  #step 2: set environment variables in .env file :
+
     DATABASE_URL= "postgreSQL database url"
 
     REDIS_USERNAME="in my case : default"
@@ -17,7 +19,7 @@
     EMAIL_USER="in my case : sakib.zero.one@gmail.com"
     EMAIL_PASSWORD= "this can be generated in Google account, in my case : ikxp ctte ucun lhrh"
 
-  #step 3: generate Prisma client
+  #step 3: generate Prisma client :
     npx prisma generate
     npx prisma migrate dev --name init
 
@@ -27,7 +29,8 @@
 
 
 ## API end points example : 
-  #Event Module
+  #Event Module :
+
     POST /event: Create a new event. 
       example payload : {
         "name" : "31st Night",
@@ -41,7 +44,8 @@
     GET /event/:id: Retrieve event details. 
     DELETE /event/:id: Delete an event.
 
-  #Attendee Module
+  #Attendee Module :
+
     POST /attendee: Add a new attendee.
       example payload : {
         "name" : "Any name",
@@ -52,7 +56,8 @@
     GET /attendee/:id: Retrieve attendee details.
     DELETE /attendee/:id: Delete an attendee.
 
-  #Registration Module
+  #Registration Module :
+  
     POST /registrations: Register an attendee for an event.
       example payload : {
         "attendeeId" : "attendee id",
