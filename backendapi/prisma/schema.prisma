@@ -16,6 +16,7 @@ model Event {
   date          DateTime
   location      String?
   maxAttendees  Int
+  reminderSent  Boolean        @default(false)
   createdAt     DateTime       @default(now())
   registrations Registration[]
 }

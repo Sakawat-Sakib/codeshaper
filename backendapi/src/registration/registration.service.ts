@@ -4,6 +4,7 @@ import { RedisService } from 'src/redis/redis.service';
 import { CreateRegistrationDto } from './dto/registration.dto';
 import { InjectQueue } from '@nestjs/bull';
 import { Queue } from 'bull';
+import { Cron, CronExpression } from '@nestjs/schedule';
 
 @Injectable()
 export class RegistrationService {
@@ -165,6 +166,68 @@ export class RegistrationService {
                 throw error;
             }
             throw new BadRequestException('Failed to cancel registration');
+        }
+    }
+
+    @Cron(CronExpression.EVERY_HOUR)
+    async scheduleEventReminders() {
+        const tomorrow = new Date();
+        tomorrow.setDate(tomorrow.getDate() + 1);
+        tomorrow.setHours(0, 0, 0, 0);
+
+        const dayAfterTomorrow = new Date(tomorrow);
+        dayAfterTomorrow.setDate(dayAfterTomorrow.getDate() + 1);
+
+        // Find events happening tomorrow that haven't had reminders sent
+        const upcomingEvents = await this.databaseService.event.findMany({
+            where: {
+                date: {
+                    gte: tomorrow,
+                    lt: dayAfterTomorrow
+                },
+                reminderSent: false
+            },
+            include: {
+                registrations: {
+                    include: {
+                        attendee: true
+                    }
+                }
+            }
+        });
+
+        for (const event of upcomingEvents) {
+            // Schedule reminder emails for each registered attendee
+            for (const registration of event.registrations) {
+                await this.emailQueue.add(
+                    'event-reminder',
+                    {
+                        attendee: {
+                            name: registration.attendee.name,
+                            email: registration.attendee.email
+                        },
+                        event: {
+                            name: event.name,
+                            date: event.date,
+                            location: event.location,
+                            description: event.description
+                        }
+                    },
+                    {
+                        attempts: 3,
+                        backoff: {
+                            type: 'exponential',
+                            delay: 1000
+                        }
+                    }
+                );
+            }
+
+            // Mark event as having sent reminders
+            await this.databaseService.event.update({
+                where: { id: event.id },
+                data: { reminderSent: true }
+            });
         }
     }
 }

@@ -9,6 +9,7 @@ import { RegistrationModule } from './registration/registration.module';
 import { EmailModule } from './email/email.module';
 import { BullModule } from '@nestjs/bull';
 import { ConfigModule } from '@nestjs/config';
+import { ScheduleModule } from '@nestjs/schedule';
 
 @Module({
   imports: [
@@ -21,6 +22,7 @@ import { ConfigModule } from '@nestjs/config';
           password: process.env.REDIS_PASSWORD
       },
     }),
+    ScheduleModule.forRoot(),
     DatabaseModule, 
     RedisModule, 
     EventModule,

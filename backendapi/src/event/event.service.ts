@@ -15,7 +15,7 @@ export class EventService {
     ){}
 
     async createEvent(createEventDto: CreateEventDto) {
-        const date = new Date(createEventDto.date);
+        const date = new Date(createEventDto.date); //format: "2024-12-31T12:30:00+06:00"
         
         if (isNaN(date.getTime())) {
             throw new BadRequestException("Invalid date format. Please provide a valid ISO-8601 date.");
