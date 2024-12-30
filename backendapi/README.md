@@ -27,6 +27,8 @@
     nest start
 
 
+## Update : I have created API documentation using Swagger. You can access it by going to http://localhost:3000/api-docs. 
+
 
 ## API end points example : 
   #Event Module :
